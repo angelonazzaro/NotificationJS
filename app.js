@@ -1,7 +1,8 @@
 import Toast from "./Toast.js";
 
 document.querySelector("button").addEventListener("click", () => {
-      new Toast({
-            text: "Hello Fucker"
-      });
-})
+  new Toast({
+    text: "Hello Fucker",
+    position: "top-right",
+  });
+});

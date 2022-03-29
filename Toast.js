@@ -5,12 +5,15 @@ const DEFAULT_OPTIONS = {
   canClose: true,
   showProgress: true,
   newestOnTop: false,
+  animationClass: "bounce",
 };
 
 export default class Toast {
   #toast;
   #autoClose;
   #isPaused = false;
+  #showProgress = false;
+  #animationClass;
 
   constructor(options) {
     this.#toast = document.createElement("div");
@@ -31,25 +34,49 @@ export default class Toast {
     this.#toast.append(toastBody);
 
     requestAnimationFrame(() => {
-      this.#toast.classList.add("show");
+      this.#toast.classList.add("bounce");
     });
 
     this.update({ ...DEFAULT_OPTIONS, ...options });
   }
 
-  set position(position) {
+  /**
+   * @param {string} value
+   */
+
+  set animationClass(value) {
+    this.#animationClass = value;
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  set showProgress(value) {
+    this.#showProgress = value;
+
+    if (value === true) this.#toast.classList.add("show-progress");
+    else this.#toast.classList.remove("show-progress");
+  }
+
+  /**
+   * @param {string} value
+   */
+  set position(value) {
     const currentContainer = this.#toast.parentElement;
     const container =
-      document.querySelector(`.toast-container[data-position="${position}"]`) ||
-      createToastContainer(position);
+      document.querySelector(`.toast-container[data-position="${value}"]`) ||
+      createToastContainer(value);
 
     container.append(this.#toast);
     if (currentContainer == null || currentContainer.hasChildNodes()) return;
     currentContainer.remove();
   }
 
-  set text(text) {
-    this.#toast.querySelector(".toast__body").textContent = text;
+  /**
+   * @param {string} value
+   */
+  set text(value) {
+    this.#toast.querySelector(".toast__body").textContent = value;
   }
 
   update(options) {
@@ -59,8 +86,12 @@ export default class Toast {
   }
 
   removeToast() {
-    this.#toast.classList.remove("show");
+    //this.#toast.classList.remove(`${this.#animationClass}`);
+    this.#toast.classList.add(`${this.#animationClass}-backwards`);
+
     this.#toast.addEventListener("transitionend", () => {
+      this.#toast.classList.remove(`${this.#animationClass}`);
+      this.#toast.classList.remove(`${this.#animationClass}-backwards`);
       this.#toast.remove();
     });
     this.onClose();
