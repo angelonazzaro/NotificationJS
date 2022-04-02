@@ -5,6 +5,10 @@
   --progressBarDarkModeSecond: #bb86fc;
   --progressBarWhiteModeFirst: #6e45e1;
   --progressBarWhiteModeSecond: #89d4cf;
+  --progressBarSuccess: #0fbd1f;
+  --progressBarInfo: #4497d9;
+  --progressBarWarning: #edc52a;
+  --progressBarError: #e34d41;
   --progress: 1;
 }
 
@@ -31,6 +35,7 @@
   background-color: white;
   cursor: pointer;
   position: relative;
+  transition: all 600ms ease-out;
   transition: transform var(--transitionPropertyDuration) ease;
   transition: animation var(--transitionAnimationDuration) linear;
   overflow: hidden;
@@ -46,7 +51,11 @@
 
 .toast.show-progress::before {
   content: "";
-  background-image: linear-gradient(to right, var(--progressBarWhiteModeFirst), var(--progressBarWhiteModeSecond));
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarWhiteModeFirst),
+    var(--progressBarWhiteModeSecond)
+  );
   width: calc(100% * var(--progress));
   height: 3.6px;
   position: absolute;
@@ -56,7 +65,59 @@
 }
 
 .toast.show-progress.dark-mode::before {
-  background-image: linear-gradient(to right, var(--progressBarDarkModeFirst), var(--progressBarDarkModeSecond));
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarDarkModeFirst),
+    var(--progressBarDarkModeSecond)
+  );
+}
+
+.toast.show-progress.success::before {
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarSuccess),
+    var(--progressBarSuccess)
+  );
+}
+
+.toast.success span {
+  color: var(--progressBarSuccess);
+}
+
+.toast.show-progress.info::before {
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarInfo),
+    var(--progressBarInfo)
+  );
+}
+
+.toast.info span {
+  color: var(--progressBarInfo);
+}
+
+.toast.show-progress.warning::before {
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarWarning),
+    var(--progressBarWarning)
+  );
+}
+
+.toast.warning span {
+  color: var(--progressBarWarning);
+}
+
+.toast.show-progress.error::before {
+  background-image: linear-gradient(
+    to right,
+    var(--progressBarError),
+    var(--progressBarError)
+  );
+}
+
+.toast.error span {
+  color: var(--progressBarError);
 }
 
 .toast__close {

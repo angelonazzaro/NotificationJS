@@ -12,6 +12,7 @@ const DEFAULT_OPTIONS = {
   animationClass: "bounce",
   darkMode: false,
   progressBarBackground: [],
+  type: "default",
 };
 
 export default class Toast {
@@ -33,6 +34,7 @@ export default class Toast {
   #darkMode;
   #progressBarBackgroundWhite = ["#6e45e1", "#89d4cf"];
   #progressBarBackgroundDark = ["#bb86fc"];
+  #type;
 
   constructor(options) {
     this.#toast = document.createElement("div");
@@ -108,7 +110,7 @@ export default class Toast {
       Post edit: a similar logic is applied when the windows loses focus
       */
 
-    if (this.#showProgress === true && this.#autoClose > 0) {
+    if (this.#autoClose > 0) {
       lastTimeCalled = new Date();
 
       this.#progressBarInterval = setInterval(() => {
@@ -207,12 +209,42 @@ export default class Toast {
   }
 
   /**
+   * Render toast as a success/warning/error/info/default notification.
+   * @param {string} value
+   */
+  set type(value) {
+    this.#type = value;
+
+    this.#toast.classList.add(`${this.#type}`);
+
+    if (this.#icon === null || this.#icon === undefined || this.icon === "") {
+      switch (this.#type) {
+        case "success":
+          this.#icon = "fa-solid fa-circle-check";
+          break;
+        case "info":
+          this.#icon = "fa-solid fa-circle-info";
+          break;
+        case "error":
+          this.#icon = "fa-solid fa-circle-exclamation";
+          break;
+        case "warning":
+          this.#icon = "fa-solid fa-triangle-exclamation";
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
    * @param {string} value
    */
   set text(value) {
+    console.log(this.#icon);
     const toastBody = this.#toast.querySelector(".toast__body");
     toastBody.querySelector("p").textContent = value;
-    toastBody.insertBefore(createIcon(this.#toast.icon), toastBody.firstChild);
+    toastBody.insertBefore(createIcon(this.#icon), toastBody.firstChild);
   }
 
   /**
@@ -265,6 +297,7 @@ export default class Toast {
 
   removeToast() {
     clearInterval(this.#progressBarInterval);
+
     // Set dynamic class
     this.#toast.classList.remove(`${this.#animationClass}`);
     this.#toast.classList.add(`${this.#animationClass}-backwards`);
@@ -299,7 +332,7 @@ export default class Toast {
 function createIcon(icon) {
   const span = document.createElement("span");
 
-  if (icon === null) return span;
+  if (icon === null || icon == "" || icon == undefined) return span;
 
   const i = document.createElement("i");
 
