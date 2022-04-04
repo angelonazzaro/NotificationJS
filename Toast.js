@@ -9,6 +9,7 @@ const DEFAULT_OPTIONS = {
   newestOnTop: false,
   pauseOnHover: true,
   pauseOnFocusLoss: true,
+  draggable: true,
   animationClass: "bounce",
   darkMode: false,
   progressBarBackground: [],
@@ -35,6 +36,10 @@ export default class Toast {
   #progressBarBackgroundWhite = ["#6e45e1", "#89d4cf"];
   #progressBarBackgroundDark = ["#bb86fc"];
   #type;
+  #draggable;
+  #isDown = false;
+  #offset = [0, 0];
+  #mousePosition;
 
   constructor(options) {
     this.#toast = document.createElement("div");
@@ -205,7 +210,58 @@ export default class Toast {
    */
 
   set icon(value) {
-    this.#toast.icon = value;
+    this.#icon = value;
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  set draggable(value) {
+    this.#draggable = value;
+
+    if (this.#draggable === false) return;
+
+    this.#toast.setAttribute("draggable", true);
+
+    this.#toast.addEventListener("mousedown", (e) => {
+      this.#isDown = true;
+      this.#offset = [
+        this.#toast.offsetLeft - e.clientX,
+        this.#toast.offsetTop - e.clientY,
+      ];
+    });
+
+    document.addEventListener("mouseup", () => {
+      this.#isDown = false;
+
+      // if (this.#position.startsWith("top")) this.#toast.style.top = 0;
+      // else if (this.#position.startsWith("bottom"))
+      //   this.#toast.style.bottom = 0;
+
+      // if (this.#position.endsWith("-right"))
+      //   this.#toast.style.transform = `translateX(${
+      //     window.innerWidth - parseInt(this.#toast.style.right)
+      //   }px)`;
+      // else if (this.#position.endsWith("-left"))
+      //   this.#toast.style.transform = `translateX(-${
+      //     window.innerWidth - parseInt(this.#toast.style.left)
+      //   }px)`;
+    });
+
+    this.#toast.addEventListener("mousemove", (e) => {
+      e.preventDefault();
+
+      if (this.#isDown === false) return;
+
+      this.#mousePosition = {
+        x: e.clientX,
+        y: e.clientY,
+      };
+
+      this.#toast.style.left = `${
+        this.#mousePosition.x + this.#offset[0] + this.#offset[1]
+      }px`;
+    });
   }
 
   /**
@@ -241,7 +297,6 @@ export default class Toast {
    * @param {string} value
    */
   set text(value) {
-    console.log(this.#icon);
     const toastBody = this.#toast.querySelector(".toast__body");
     toastBody.querySelector("p").textContent = value;
     toastBody.insertBefore(createIcon(this.#icon), toastBody.firstChild);

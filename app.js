@@ -5,7 +5,7 @@ document.querySelector("button").addEventListener("click", () => {
     text: "Hello",
     position: "top-right",
     closeOnClick: false,
-    autoClose: true,
+    autoClose: false,
     animationClass: "zoom",
     pauseOnFocusLoss: false,
     icon: null,
