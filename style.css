@@ -1,362 +1,380 @@
 :root {
-  --transitionPropertyDuration: 300ms;
-  --transitionAnimationDuration: 500ms;
-  --progressBarDarkModeFirst: #bb86fc;
-  --progressBarDarkModeSecond: #bb86fc;
-  --progressBarWhiteModeFirst: #6e45e1;
-  --progressBarWhiteModeSecond: #89d4cf;
-  --progressBarSuccess: #0fbd1f;
-  --progressBarInfo: #4497d9;
-  --progressBarWarning: #edc52a;
-  --progressBarError: #e34d41;
-  --progress: 1;
-  --opacity: 1;
+	--transitionPropertyDuration: 300ms;
+	--transitionAnimationDuration: 500ms;
+	--progressBarDarkModeFirst: #bb86fc;
+	--progressBarDarkModeSecond: #bb86fc;
+	--progressBarWhiteModeFirst: #6e45e1;
+	--progressBarWhiteModeSecond: #89d4cf;
+	--progressBarSuccess: #0fbd1f;
+	--progressBarInfo: #4497d9;
+	--progressBarWarning: #edc52a;
+	--progressBarError: #e34d41;
+	--progress: 1;
+	--opacity: 1;
+	--originalOpacity: 1;
+	--originalPosition: 100px;
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	scroll-behavior: smooth;
 }
 
 .toast-container {
-  position: fixed;
-  width: 280px;
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  background-color: transparent;
-  gap: 0.5em;
+	position: fixed;
+	width: 280px;
+	margin: 20px;
+	display: flex;
+	flex-direction: column;
+	background-color: transparent;
+	gap: 0.5em;
 }
 
 .toast {
-  box-sizing: border-box;
-  padding: 1.35em;
-  border-radius: 0.28em;
-  background-color: white;
-  cursor: pointer;
-  position: relative;
-  width: 100%;
-  transition: all 600ms ease-out;
-  transition: transform var(--transitionPropertyDuration) ease;
-  transition: animation var(--transitionAnimationDuration) linear;
-  transition: opacity 500ms ease;
-  overflow: hidden;
-  opacity: 1;
-  border: 1px solid rgb(173, 161, 161);
-  box-shadow: 0px 1px 10px 0px rgb(230, 230, 230),
-    0 2px 15px 0 rgb(230, 230, 230);
+	box-sizing: border-box;
+	padding: 1.35em;
+	border-radius: 0.28em;
+	background-color: white;
+	cursor: pointer;
+	position: relative;
+	width: 100%;
+	transition: all 600ms ease-out;
+	transition: transform var(--transitionPropertyDuration) ease;
+	transition: animation var(--transitionAnimationDuration) linear;
+	transition: opacity 500ms ease;
+	overflow: hidden;
+	opacity: 1;
+	border: 1px solid rgb(173, 161, 161);
+	box-shadow: 0px 1px 10px 0px rgb(230, 230, 230),
+		0 2px 15px 0 rgb(230, 230, 230);
 }
 
 .toast.dark-mode {
-  background-color: black;
-  color: white;
+	background-color: black;
+	color: white;
 }
 
 .toast.show-progress::before {
-  content: "";
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarWhiteModeFirst),
-    var(--progressBarWhiteModeSecond)
-  );
-  width: calc(100% * var(--progress));
-  height: 3.6px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+	content: "";
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarWhiteModeFirst),
+		var(--progressBarWhiteModeSecond)
+	);
+	width: calc(100% * var(--progress));
+	height: 3.6px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 
 .toast.show-progress.dark-mode::before {
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarDarkModeFirst),
-    var(--progressBarDarkModeSecond)
-  );
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarDarkModeFirst),
+		var(--progressBarDarkModeSecond)
+	);
 }
 
 .toast.show-progress.success::before {
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarSuccess),
-    var(--progressBarSuccess)
-  );
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarSuccess),
+		var(--progressBarSuccess)
+	);
 }
 
 .toast.success span {
-  color: var(--progressBarSuccess);
+	color: var(--progressBarSuccess);
 }
 
 .toast.show-progress.info::before {
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarInfo),
-    var(--progressBarInfo)
-  );
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarInfo),
+		var(--progressBarInfo)
+	);
 }
 
 .toast.info span {
-  color: var(--progressBarInfo);
+	color: var(--progressBarInfo);
 }
 
 .toast.show-progress.warning::before {
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarWarning),
-    var(--progressBarWarning)
-  );
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarWarning),
+		var(--progressBarWarning)
+	);
 }
 
 .toast.warning span {
-  color: var(--progressBarWarning);
+	color: var(--progressBarWarning);
 }
 
 .toast.show-progress.error::before {
-  background-image: linear-gradient(
-    to right,
-    var(--progressBarError),
-    var(--progressBarError)
-  );
+	background-image: linear-gradient(
+		to right,
+		var(--progressBarError),
+		var(--progressBarError)
+	);
 }
 
 .toast.error span {
-  color: var(--progressBarError);
+	color: var(--progressBarError);
 }
 
 .toast__close {
-  position: absolute;
-  color: #b3b3b3;
-  font-size: 1.3rem;
-  top: 2px;
-  right: 5px;
-  transition: color 200ms ease;
+	position: absolute;
+	color: #b3b3b3;
+	font-size: 1.3rem;
+	top: 2px;
+	right: 5px;
+	transition: color 200ms ease;
 }
 
 .toast__close:hover {
-  color: #000000;
+	color: #000000;
 }
 
 .toast.dark-mode > .toast__close:hover {
-  color: white;
+	color: white;
 }
 
 .toast__body {
-  font-size: 0.98rem;
-  text-align: left;
-  display: flex;
-  align-items: center;
+	font-size: 0.98rem;
+	text-align: left;
+	display: flex;
+	align-items: center;
 }
 
 .toast__body p {
-  word-break: break-all;
-  padding: 0 0.89em;
+	word-break: break-all;
+	padding: 0 0.89em;
 }
 
 .toast-container[data-position^="top"] {
-  top: 0;
+	top: 0;
 }
 
 .toast-container[data-position^="bottom"] {
-  bottom: 0;
+	bottom: 0;
 }
 
 .toast-container[data-position$="-right"] {
-  right: 0;
+	right: 0;
 }
 
 .toast-container[data-position$="-left"] {
-  left: 0;
+	left: 0;
 }
 
 .toast-container[data-position="top-center"] .toast {
-  transform: translateY(-100vh);
+	transform: translateY(-100vh);
 }
 
 .toast-container[data-position="bottom-center"] .toast {
-  transform: translateY(100vh);
+	transform: translateY(100vh);
 }
 
 /* BOUNCE ANIMATION */
 
 .toast-container[data-position$="-right"] .toast.bounce {
-  transform: translateX(110%);
-  animation: bounce-in-right 360ms forwards ease;
+	transform: translateX(110%);
+	animation: bounce-in-right 360ms forwards ease;
 }
 
 .toast-container[data-position$="-right"] .toast.bounce-backwards {
-  animation: bounce-in-right-backwards 500ms forwards ease;
+	animation: bounce-in-right-backwards 500ms forwards ease;
 }
 
 .toast-container[data-position$="-left"] .toast.bounce {
-  transform: translateX(-110%);
-  animation: bounce-in-left 360ms forwards ease;
+	transform: translateX(-110%);
+	animation: bounce-in-left 360ms forwards ease;
 }
 
 .toast-container[data-position$="-left"] .toast.bounce-backwards {
-  animation: bounce-in-left-backwards 500ms forwards ease;
+	animation: bounce-in-left-backwards 500ms forwards ease;
 }
 
 @keyframes bounce-in-right {
-  0% {
-    transform: translateX(110%);
-  }
+	0% {
+		transform: translateX(110%);
+	}
 
-  60% {
-    transform: translateX(-30px);
-  }
+	60% {
+		transform: translateX(-30px);
+	}
 
-  80% {
-    transform: translateX(30px);
-  }
+	80% {
+		transform: translateX(30px);
+	}
 
-  100% {
-    transform: translate(0, 0);
-  }
+	100% {
+		transform: translate(0, 0);
+	}
 }
 
 @keyframes bounce-in-right-backwards {
-  0% {
-    transform: translate(0, 0);
-  }
+	0% {
+		transform: translate(0, 0);
+	}
 
-  60% {
-    transform: translateX(30px);
-  }
+	60% {
+		transform: translateX(30px);
+	}
 
-  80% {
-    transform: translateX(-30px);
-  }
+	80% {
+		transform: translateX(-30px);
+	}
 
-  100% {
-    transform: translateX(110%);
-  }
+	100% {
+		transform: translateX(110%);
+	}
 }
 
 @keyframes bounce-in-left {
-  0% {
-    transform: translateX(-110%);
-  }
+	0% {
+		transform: translateX(-110%);
+	}
 
-  60% {
-    transform: translateX(30px);
-  }
+	60% {
+		transform: translateX(30px);
+	}
 
-  80% {
-    transform: translateX(-30px);
-  }
+	80% {
+		transform: translateX(-30px);
+	}
 
-  100% {
-    transform: translate(0, 0);
-  }
+	100% {
+		transform: translate(0, 0);
+	}
 }
 
 @keyframes bounce-in-left-backwards {
-  0% {
-    transform: translate(0, 0);
-  }
+	0% {
+		transform: translate(0, 0);
+	}
 
-  60% {
-    transform: translateX(-30px);
-  }
+	60% {
+		transform: translateX(-30px);
+	}
 
-  80% {
-    transform: translateX(30px);
-  }
+	80% {
+		transform: translateX(30px);
+	}
 
-  100% {
-    transform: translateX(-110%);
-  }
+	100% {
+		transform: translateX(-110%);
+	}
 }
 
 /* SLIDE ANIMATION */
 .toast-container[data-position$="-right"] .toast.slide {
-  transform: translateX(100%);
-  animation: slide-in-right 360ms forwards ease;
+	transform: translateX(100%);
+	animation: slide-in-right 360ms forwards ease;
 }
 
 .toast-container[data-position$="-right"] .toast.slide-backwards {
-  animation: slide-in-right-backwards 500ms forwards ease;
+	animation: slide-in-right-backwards 500ms forwards ease;
 }
 
 .toast-container[data-position$="-left"] .toast.slide {
-  transform: translateX(-100%);
-  animation: slide-in-left 360ms forwards ease;
+	transform: translateX(-100%);
+	animation: slide-in-left 360ms forwards ease;
 }
 
 .toast-container[data-position$="-left"] .toast.slide-backwards {
-  animation: slide-in-left-backwards 500ms forwards ease;
+	animation: slide-in-left-backwards 500ms forwards ease;
 }
 
 @keyframes slide-in-right {
-  0% {
-    transform: translateX(100%);
-  }
+	0% {
+		transform: translateX(100%);
+	}
 
-  100% {
-    transform: translate(0, 0);
-  }
+	100% {
+		transform: translate(0, 0);
+	}
 }
 
 @keyframes slide-in-right-backwards {
-  0% {
-    transform: translate(0, 0);
-  }
+	0% {
+		transform: translate(0, 0);
+	}
 
-  100% {
-    transform: translateX(110%);
-  }
+	100% {
+		transform: translateX(110%);
+	}
 }
 
 @keyframes slide-in-left {
-  0% {
-    transform: translateX(-100%);
-  }
+	0% {
+		transform: translateX(-100%);
+	}
 
-  100% {
-    transform: translate(0, 0);
-  }
+	100% {
+		transform: translate(0, 0);
+	}
 }
 
 @keyframes slide-in-left-backwards {
-  0% {
-    transform: translate(0, 0);
-  }
+	0% {
+		transform: translate(0, 0);
+	}
 
-  100% {
-    transform: translateX(-110%);
-  }
+	100% {
+		transform: translateX(-110%);
+	}
 }
 
 /* ZOOM ANIMATION */
 
 .toast.zoom {
-  animation: zoom 500ms forwards ease;
-  transform: scale(0, 0);
-  transition: scale var(--transitionPropertyDuration) ease;
+	animation: zoom 500ms forwards ease;
+	transform: scale(0, 0);
+	transition: scale var(--transitionPropertyDuration) ease;
 }
 
 .toast.zoom-backwards {
-  animation: zoom-backwards 600ms forwards ease;
+	animation: zoom-backwards 600ms forwards ease;
 }
 
 @keyframes zoom {
-  0% {
-    transform: scale(0, 0);
-  }
+	0% {
+		transform: scale(0, 0);
+	}
 
-  100% {
-    transform: scale(1, 1);
-  }
+	100% {
+		transform: scale(1, 1);
+	}
 }
 
 @keyframes zoom-backwards {
-  0% {
-    transform: scale(1, 1);
-  }
+	0% {
+		transform: scale(1, 1);
+	}
 
-  100% {
-    transform: scale(0, 0);
-  }
+	100% {
+		transform: scale(0, 0);
+	}
+}
+
+/* DRAG ANIMATION */
+.slide-back {
+	animation: slide-back 500ms forwards ease ;
+}
+
+@keyframes slide-back {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(var(--originalPosition));
+	}
 }

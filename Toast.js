@@ -1,411 +1,449 @@
 const DEFAULT_OPTIONS = {
-  position: "top-right",
-  autoClose: 5000,
-  icon: null,
-  onClose: () => {},
-  canClose: true,
-  closeOnClick: false,
-  showProgress: true,
-  newestOnTop: false,
-  pauseOnHover: true,
-  pauseOnFocusLoss: true,
-  draggable: true,
-  animationClass: "bounce",
-  darkMode: false,
-  progressBarBackground: [],
-  type: "default",
+	position: "top-right",
+	autoClose: 5000,
+	icon: null,
+	onClose: () => {},
+	canClose: true,
+	closeOnClick: false,
+	showProgress: true,
+	newestOnTop: false,
+	pauseOnHover: true,
+	pauseOnFocusLoss: true,
+	draggable: true,
+	animationClass: "bounce",
+	darkMode: false,
+	progressBarBackground: [],
+	type: "default",
 };
 
 export default class Toast {
-  #icon;
-  #toast;
-  #position;
-  #autoClose;
-  #progressBarInterval;
-  #isPaused;
-  #pause;
-  #unpause;
-  #newestOnTop;
-  #showProgress;
-  #closeOnClick;
-  #animationClass;
-  #timeElapsed;
-  #visibilityChange;
-  #isFocusLost = document.visibilityState !== "visible";
-  #darkMode;
-  #progressBarBackgroundWhite = ["#6e45e1", "#89d4cf"];
-  #progressBarBackgroundDark = ["#bb86fc"];
-  #type;
-  #draggable;
-  #isDown = false;
-  #offset = [0, 0];
-  #mousePosition;
+	#container;
+	#icon;
+	#toast;
+	#position;
+	#autoClose;
+	#progressBarInterval;
+	#isPaused;
+	#pause;
+	#unpause;
+	#newestOnTop;
+	#showProgress;
+	#closeOnClick;
+	#animationClass;
+	#timeElapsed;
+	#visibilityChange;
+	#isFocusLost = document.visibilityState !== "visible";
+	#darkMode;
+	#progressBarBackgroundWhite = ["#6e45e1", "#89d4cf"];
+	#progressBarBackgroundDark = ["#bb86fc"];
+	#type;
+	#draggable;
+	#isDown = false;
+	#offset = [0, 0];
 
-  constructor(options) {
-    this.#toast = document.createElement("div");
-    this.#toast.classList.add("toast");
+	constructor(options) {
+		this.#toast = document.createElement("div");
+		this.#toast.classList.add("toast");
+		this.#toast.setAttribute("draggable", false);
+		// Remove drag & drop "preview"
+		this.#toast.addEventListener("dragstart", (e) => e.preventDefault());
+		this.#toast.addEventListener("drop", (e) => e.preventDefault());
 
-    const toastClose = document.createElement("div");
-    toastClose.textContent = "×";
-    toastClose.addEventListener("click", () => {
-      this.removeToast();
-    });
+		const toastClose = document.createElement("div");
+		toastClose.textContent = "×";
+		toastClose.addEventListener("click", () => {
+			this.removeToast();
+		});
 
-    this.#visibilityChange = () => {
-      this.#isFocusLost = document.visibilityState !== "visible";
-    };
+		this.#visibilityChange = () => {
+			this.#isFocusLost = document.visibilityState !== "visible";
+		};
 
-    this.#pause = () => {
-      this.#isPaused = true;
-    };
-    this.#unpause = () => {
-      this.#isPaused = false;
-    };
+		this.#pause = () => {
+			this.#isPaused = true;
+		};
+		this.#unpause = () => {
+			this.#isPaused = false;
+		};
 
-    toastClose.classList.add("toast__close");
+		toastClose.classList.add("toast__close");
 
-    const toastBody = document.createElement("div");
-    toastBody.classList.add("toast__body");
-    toastBody.append(document.createElement("p"));
+		const toastBody = document.createElement("div");
+		toastBody.classList.add("toast__body");
+		toastBody.append(document.createElement("p"));
 
-    this.#toast.append(toastClose);
-    this.#toast.append(toastBody);
+		this.#toast.append(toastClose);
+		this.#toast.append(toastBody);
 
-    requestAnimationFrame(() => {
-      this.#toast.classList.add(this.#animationClass);
-    });
+		requestAnimationFrame(() => {
+			this.#toast.classList.add(this.#animationClass);
+		});
 
-    this.update({ ...DEFAULT_OPTIONS, ...options });
-  }
+		this.update({ ...DEFAULT_OPTIONS, ...options });
+	}
 
-  /**
-   * @param {string} value
-   */
-  set animationClass(value) {
-    this.#animationClass = value;
-  }
+	/**
+	 * @param {string} value
+	 */
+	set animationClass(value) {
+		this.#animationClass = value;
+	}
 
-  /**
-   * @param {float | boolean} value
-   */
-  set autoClose(value) {
-    this.#autoClose = value === true ? 5000 : value === false ? 0 : value;
+	/**
+	 * @param {float | boolean} value
+	 */
+	set autoClose(value) {
+		this.#autoClose = value === true ? 5000 : value === false ? 0 : value;
 
-    if (this.#autoClose <= 0) return;
+		if (this.#autoClose <= 0) return;
 
-    this.#timeElapsed = 0;
-  }
+		this.#timeElapsed = 0;
+	}
 
-  /**
-   * Regulates the progress bar animation
-   * @param {boolean} value
-   */
-  set showProgress(value) {
-    this.#showProgress = value;
+	/**
+	 * Regulates the progress bar animation
+	 * @param {boolean} value
+	 */
+	set showProgress(value) {
+		this.#showProgress = value;
 
-    this.#toast.classList.toggle("show-progress", this.#showProgress);
+		this.#toast.classList.toggle("show-progress", this.#showProgress);
 
-    let lastTimeCalled = null;
+		let lastTimeCalled = null;
 
-    /*
-      If the toast is hovered, the progress bar animation will pause.
-      Since we do not want that when the toast is not hovered anymore the animation finishes immediatley,
-      we save the moment it was hovered and we use that moment to have a nice smooth animation.
+		/*
+		If the toast is hovered, the progress bar animation will pause.
+		Since we do not want that when the toast is not hovered anymore the animation finishes immediately,
+		we save the moment it was hovered and we use that moment to have a nice smooth animation.
 
-      Post edit: a similar logic is applied when the windows loses focus
-      */
+		Post edit: a similar logic is applied when the windows loses focus
+    	*/
 
-    if (this.#autoClose > 0) {
-      lastTimeCalled = new Date();
+		if (this.#autoClose > 0) {
+			lastTimeCalled = new Date();
 
-      this.#progressBarInterval = setInterval(() => {
-        if (this.#isPaused || this.#isFocusLost) {
-          lastTimeCalled = new Date();
-          return;
-        }
+			this.#progressBarInterval = setInterval(() => {
+				if (this.#isPaused || this.#isFocusLost) {
+					lastTimeCalled = new Date();
+					return;
+				}
 
-        this.#timeElapsed += new Date() - lastTimeCalled;
+				this.#timeElapsed += new Date() - lastTimeCalled;
 
-        this.#toast.style.setProperty(
-          "--progress",
-          1 - this.#timeElapsed / this.#autoClose
-        );
+				this.#toast.style.setProperty(
+					"--progress",
+					1 - this.#timeElapsed / this.#autoClose
+				);
 
-        lastTimeCalled = new Date();
+				lastTimeCalled = new Date();
 
-        if (this.#timeElapsed >= this.#autoClose) this.removeToast();
-      }, 20);
-    }
-  }
+				if (this.#timeElapsed >= this.#autoClose) this.removeToast();
+			}, 20);
+		}
+	}
 
-  /**
-   * Stops the autoClose timer when the toast is hovered on & starts/keeps running the
-   * autoClose timer when the toast is not hovered on
-   * @param {boolean} value
-   */
-  set pauseOnHover(value) {
-    if (value) {
-      this.#toast.addEventListener("mouseover", this.#pause);
-      this.#toast.addEventListener("mouseleave", this.#unpause);
-    } else {
-      this.#toast.removeEventListener("mouseover", this.#pause);
-      this.#toast.removeEventListener("mouseleave", this.#unpause);
-    }
-  }
+	/**
+	 * Stops the autoClose timer when the toast is hovered on & starts/keeps running the
+	 * autoClose timer when the toast is not hovered on
+	 * @param {boolean} value
+	 */
+	set pauseOnHover(value) {
+		if (value) {
+			this.#toast.addEventListener("mouseover", this.#pause);
+			this.#toast.addEventListener("mouseleave", this.#unpause);
+		} else {
+			this.#toast.removeEventListener("mouseover", this.#pause);
+			this.#toast.removeEventListener("mouseleave", this.#unpause);
+		}
+	}
 
-  /**
-   * Stops the autoClose timer when the window loses fucos & starts/keeps running the
-   * autoClose timer when the windows is focused/regains the focus
-   * @param {boolean} value
-   */
-  set pauseOnFocusLoss(value) {
-    if (value) {
-      document.addEventListener("visibilitychange", this.#visibilityChange);
-    } else {
-      document.removeEventListener("visibilitychange", this.#visibilityChange);
-    }
-  }
+	/**
+	 * Stops the autoClose timer when the window loses focus & starts/keeps running the
+	 * autoClose timer when the windows is focused/regains the focus
+	 * @param {boolean} value
+	 */
+	set pauseOnFocusLoss(value) {
+		if (value) {
+			document.addEventListener(
+				"visibilitychange",
+				this.#visibilityChange
+			);
+		} else {
+			document.removeEventListener(
+				"visibilitychange",
+				this.#visibilityChange
+			);
+		}
+	}
 
-  /**
-   * Makes the toast disapper if clicked on it (not only on the close btn)
-   * @param {boolean} value
-   */
-  set closeOnClick(value) {
-    this.#closeOnClick = value;
+	/**
+	 * Makes the toast disappear if clicked on it (not only on the close btn)
+	 * @param {boolean} value
+	 */
+	set closeOnClick(value) {
+		this.#closeOnClick = value;
 
-    if (this.#closeOnClick === true)
-      this.#toast.addEventListener("click", () => {
-        this.removeToast();
-      });
-    else
-      this.#toast.removeEventListener(
-        "click",
-        () => {
-          this.removeToast();
-        },
-        true
-      );
-  }
+		if (this.#closeOnClick === true)
+			this.#toast.addEventListener("click", () => {
+				this.removeToast();
+			});
+		else
+			this.#toast.removeEventListener(
+				"click",
+				() => {
+					this.removeToast();
+				},
+				true
+			);
+	}
 
-  /**
-   * @param {string} value
-   */
-  set position(value) {
-    this.#position = value;
-    const currentContainer = this.#toast.parentElement;
-    const container =
-      document.querySelector(
-        `.toast-container[data-position="${this.#position}"]`
-      ) || createToastContainer(this.#position);
+	/**
+	 * @param {string} value
+	 */
+	set position(value) {
+		this.#position = value;
+		const currentContainer = this.#toast.parentElement;
+		const container =
+			document.querySelector(
+				`.toast-container[data-position="${this.#position}"]`
+			) || createToastContainer(this.#position);
 
-    if (this.#newestOnTop === false) container.append(this.#toast);
-    else container.insertBefore(this.#toast, container.firstChild);
+		this.#container = container;
 
-    if (currentContainer == null || currentContainer.hasChildNodes()) return;
-    currentContainer.remove();
-  }
+		if (this.#newestOnTop === false) container.append(this.#toast);
+		else container.insertBefore(this.#toast, container.firstChild);
 
-  /**
-   * @param {string} value
-   */
+		if (currentContainer == null || currentContainer.hasChildNodes())
+			return;
+		currentContainer.remove();
+	}
 
-  set icon(value) {
-    this.#icon = value;
-  }
+	/**
+	 * @param {string} value
+	 */
 
-  /**
-   * @param {boolean} value
-   */
-  set draggable(value) {
-    this.#draggable = value;
+	set icon(value) {
+		this.#icon = value;
+	}
 
-    if (this.#draggable === false) return;
+	/**
+	 * @param {boolean} value
+	 */
+	set draggable(value) {
+		this.#draggable = value;
 
-    this.#toast.setAttribute("draggable", true);
+		if (this.#draggable === false) return;
 
-    this.#toast.addEventListener("mousedown", (e) => {
-      this.#isDown = true;
-      this.#offset = [
-        this.#toast.offsetLeft - e.clientX,
-        this.#toast.offsetTop - e.clientY,
-      ];
-    });
+		// Make element more and more transparent when its get moved on the right or on the left
+		const computedStyle = window.getComputedStyle(this.#toast);
 
-    document.addEventListener("mouseup", () => {
-      this.#isDown = false;
+		this.#toast.addEventListener("mousedown", (e) => {
+			
+			this.#isDown = true;
+			this.#offset = [
+				this.#toast.offsetLeft - e.clientX,
+				this.#toast.offsetTop - e.clientY,
+			];
+		});
 
-      // if (this.#position.startsWith("top")) this.#toast.style.top = 0;
-      // else if (this.#position.startsWith("bottom"))
-      //   this.#toast.style.bottom = 0;
+		document.addEventListener("mouseup", () => {
+			this.#isDown = false;
 
-      // if (this.#position.endsWith("-right"))
-      //   this.#toast.style.transform = `translateX(${
-      //     window.innerWidth - parseInt(this.#toast.style.right)
-      //   }px)`;
-      // else if (this.#position.endsWith("-left"))
-      //   this.#toast.style.transform = `translateX(-${
-      //     window.innerWidth - parseInt(this.#toast.style.left)
-      //   }px)`;
-    });
+			// Reset opacity when mouse is lifted
+			this.#toast.style.opacity = 1;
 
-    this.#toast.addEventListener("mousemove", (e) => {
-      e.preventDefault();
+			this.#toast.addEventListener("animationend", () => {
+				this.#toast.style.setProperty("--originalPosition", `0px`);
+				this.#toast.classList.remove("slide-back");
+				this.#toast.style.left = 0;
+			});
 
-      if (this.#isDown === false) return;
+			// Make element go back to its original position
+			this.#toast.classList.remove(`${this.#animationClass}`);
+			this.#toast.classList.add("slide-back");
 
-      this.#mousePosition = {
-        x: e.clientX,
-        y: e.clientY,
-      };
+			const left = parseInt(
+				computedStyle.getPropertyValue("left").split("px")[0]
+			);
 
-      this.#toast.style.left = `${
-        this.#mousePosition.x + this.#offset[0] + this.#offset[1]
-      }px`;
-    });
-  }
+			this.#toast.style.setProperty(
+				"--originalPosition",
+				`${-1 * left}px`
+			);
+		});
 
-  /**
-   * Render toast as a success/warning/error/info/default notification.
-   * @param {string} value
-   */
-  set type(value) {
-    this.#type = value;
+		this.#toast.addEventListener("mousemove", (e) => {
+			e.preventDefault();
 
-    this.#toast.classList.add(`${this.#type}`);
+			if (this.#isDown === false) return;
 
-    if (this.#icon === null || this.#icon === undefined || this.icon === "") {
-      switch (this.#type) {
-        case "success":
-          this.#icon = "fa-solid fa-circle-check";
-          break;
-        case "info":
-          this.#icon = "fa-solid fa-circle-info";
-          break;
-        case "error":
-          this.#icon = "fa-solid fa-circle-exclamation";
-          break;
-        case "warning":
-          this.#icon = "fa-solid fa-triangle-exclamation";
-          break;
-        default:
-          break;
-      }
-    }
-  }
+			this.#toast.style.left = `${
+				e.clientX + this.#offset[0] + this.#offset[1]
+			}px`;
 
-  /**
-   * @param {string} value
-   */
-  set text(value) {
-    const toastBody = this.#toast.querySelector(".toast__body");
-    toastBody.querySelector("p").textContent = value;
-    toastBody.insertBefore(createIcon(this.#icon), toastBody.firstChild);
-  }
+			let left = e.clientX + this.#offset[0] + this.#offset[1];
 
-  /**
-   * @param {boolean} value
-   */
-  set darkMode(value) {
-    this.#darkMode = value;
-    if (this.#darkMode) this.#toast.classList.add("dark-mode");
-  }
+			if (left <= 0) left *= -1;
 
-  /**
-   * @param {Array} value
-   */
-  set progressBarBackground(value) {
-    const values =
-      value.length === 0
-        ? this.#darkMode
-          ? this.#progressBarBackgroundDark
-          : this.#progressBarBackgroundWhite
-        : value;
+			const width = parseInt(
+				computedStyle.getPropertyValue("width").split("px")[0]
+			);
 
-    if (values.length > 2) return;
+			if (this.#position.endsWith("-right") && left >= 180)
+				this.#toast.style.opacity = 0;
+			else this.#toast.style.opacity = `${1 - (left / width)}`;
 
-    let first = "--progressBarWhiteModeFirst",
-      second = "--progressBarWhiteModeSecond";
+			if (computedStyle.getPropertyValue("opacity") <= 0)
+				this.removeToast();
+		});
+	}
 
-    if (this.#darkMode) {
-      first = "--progressBarDarkModeFirst";
-      second = "--progressBarDarkModeSecond";
-    }
+	/**
+	 * Render toast as a success/warning/error/info/default notification.
+	 * @param {string} value
+	 */
+	set type(value) {
+		this.#type = value;
 
-    this.#toast.style.setProperty(first, values[0]);
+		this.#toast.classList.add(`${this.#type}`);
 
-    if (values.length > 1) this.#toast.style.setProperty(second, values[1]);
-  }
+		if (
+			this.#icon === null ||
+			this.#icon === undefined ||
+			this.icon === ""
+		) {
+			switch (this.#type) {
+				case "success":
+					this.#icon = "fa-solid fa-circle-check";
+					break;
+				case "info":
+					this.#icon = "fa-solid fa-circle-info";
+					break;
+				case "error":
+					this.#icon = "fa-solid fa-circle-exclamation";
+					break;
+				case "warning":
+					this.#icon = "fa-solid fa-triangle-exclamation";
+					break;
+				default:
+					break;
+			}
+		}
+	}
 
-  /**
-   * Makes the toast appear at the top of the toast's list.
-   * @param {boolean} value
-   */
-  set newestOnTop(value) {
-    this.#newestOnTop = value;
-  }
+	/**
+	 * @param {string} value
+	 */
+	set text(value) {
+		const toastBody = this.#toast.querySelector(".toast__body");
+		toastBody.querySelector("p").textContent = value;
+		toastBody.insertBefore(createIcon(this.#icon), toastBody.firstChild);
+	}
 
-  update(options) {
-    Object.entries(options).forEach(([key, value]) => {
-      this[key] = value;
-    });
-  }
+	/**
+	 * @param {boolean} value
+	 */
+	set darkMode(value) {
+		this.#darkMode = value;
+		if (this.#darkMode) this.#toast.classList.add("dark-mode");
+	}
 
-  removeToast() {
-    clearInterval(this.#progressBarInterval);
+	/**
+	 * @param {Array} value
+	 */
+	set progressBarBackground(value) {
+		const values =
+			value.length === 0
+				? this.#darkMode
+					? this.#progressBarBackgroundDark
+					: this.#progressBarBackgroundWhite
+				: value;
 
-    // Set dynamic class
-    this.#toast.classList.remove(`${this.#animationClass}`);
-    this.#toast.classList.add(`${this.#animationClass}-backwards`);
+		if (values.length > 2) return;
 
-    // Convert from "0.5s" to 0.5
-    const animDuration = parseFloat(
-      window
-        .getComputedStyle(this.#toast)
-        .getPropertyValue("animation-duration")
-        .split("s")[0]
-    );
+		let first = "--progressBarWhiteModeFirst",
+			second = "--progressBarWhiteModeSecond";
 
-    // Add a greater value to the transform transition so that it has time to elaborate things "smoothly"
-    this.#toast.style.setProperty(
-      "--transitionPropertyDuration",
-      animDuration + animDuration / 2
-    );
-    this.#toast.style.setProperty(
-      "--transitionAnimationDuration",
-      animDuration
-    );
+		if (this.#darkMode) {
+			first = "--progressBarDarkModeFirst";
+			second = "--progressBarDarkModeSecond";
+		}
 
-    this.#toast.addEventListener("animationend", () => {
-      this.#toast.remove();
-    });
+		this.#toast.style.setProperty(first, values[0]);
 
-    // Perform task(s) when the toast is removed/closed
-    this.onClose();
-  }
+		if (values.length > 1) this.#toast.style.setProperty(second, values[1]);
+	}
+
+	/**
+	 * Makes the toast appear at the top of the toast's list.
+	 * @param {boolean} value
+	 */
+	set newestOnTop(value) {
+		this.#newestOnTop = value;
+	}
+
+	update(options) {
+		Object.entries(options).forEach(([key, value]) => {
+			this[key] = value;
+		});
+	}
+
+	removeToast() {
+		clearInterval(this.#progressBarInterval);
+
+		// Set dynamic class
+		this.#toast.classList.remove(`${this.#animationClass}`);
+		this.#toast.classList.add(`${this.#animationClass}-backwards`);
+
+		// Convert from "0.5s" to 0.5
+		const animDuration = parseFloat(
+			window
+				.getComputedStyle(this.#toast)
+				.getPropertyValue("animation-duration")
+				.split("s")[0]
+		);
+
+		// Add a greater value to the transform transition so that it has time to elaborate things "smoothly"
+		this.#toast.style.setProperty(
+			"--transitionPropertyDuration",
+			animDuration + animDuration / 2
+		);
+		this.#toast.style.setProperty(
+			"--transitionAnimationDuration",
+			animDuration
+		);
+
+		this.#toast.addEventListener("animationend", () => {
+			this.#toast.remove();
+		});
+
+		// Perform task(s) when the toast is removed/closed
+		this.onClose();
+	}
 }
 
 function createIcon(icon) {
-  const span = document.createElement("span");
+	const span = document.createElement("span");
 
-  if (icon === null || icon == "" || icon == undefined) return span;
+	if (icon === null || icon == "" || icon == undefined) return span;
 
-  const i = document.createElement("i");
+	const i = document.createElement("i");
 
-  const classes = icon.split(" ");
+	const classes = icon.split(" ");
 
-  for (const singleClass of classes) i.classList.add(singleClass);
-  span.append(i);
+	for (const singleClass of classes) i.classList.add(singleClass);
+	span.append(i);
 
-  return span;
+	return span;
 }
 
 function createToastContainer(position) {
-  const container = document.createElement("div");
+	const container = document.createElement("div");
 
-  container.classList.add("toast-container");
+	container.classList.add("toast-container");
 
-  container.dataset.position = position;
-  document.body.append(container);
+	container.dataset.position = position;
+	document.body.append(container);
 
-  return container;
+	return container;
 }
