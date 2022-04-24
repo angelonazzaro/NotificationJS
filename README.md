@@ -29,6 +29,13 @@ new Toast({
 - Define your animation
 - Much more :D
 
+## Options
+
+| Option        | Type           | Description  |
+| ------------- |:-------------:| -----:|
+| text          | string        |  Sets the text content of the toast. |
+| position      | string        |  Places the toast container in one of the following positions: top-right, top-left, bottom-left, bottom-right. |
+| onClose       | function      |  Defines what should be done after the toast has been closed. |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
