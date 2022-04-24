@@ -31,8 +31,8 @@ new Toast({
 
 ## Options
 
-| Option        | Type           | Description  |
-| ------------- |:-------------:| -----:|
+| Option        | Type          | Description  |
+| ------------- |-------------  | -----        |
 | text          | string        |  Sets the text content of the toast. |
 | position      | string        |  Places the toast container in one of the following positions: top-right, top-left, bottom-left, bottom-right. |
 | onClose       | function      |  Defines what should be done after the toast has been closed. |
