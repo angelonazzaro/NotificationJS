@@ -20,14 +20,14 @@ new Toast({
 
 ## Features
 
--Define the lifetime of the toast
--Super customizable (styles, icons, type)
--Pause toast when the window loses focus
--Pause toast when the user hovers over it
--Has ```onClose``` hook
--Dark mode
--Define your animation
--Much more :D
+- Define the lifetime of the toast
+- Super customizable (styles, icons, type)
+- Pause toast when the window loses focus
+- Pause toast when the user hovers over it
+- Has ```onClose``` hook
+- Dark mode
+- Define your animation
+- Much more :D
 
 
 ## Contributing
