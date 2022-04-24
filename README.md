@@ -37,7 +37,7 @@ new Toast({
 | position      | string        |  Places the toast container in one of the following positions: top-right, top-left, bottom-left, bottom-right. |
 | onClose       | function      |  Defines what should be done after the toast has been closed. |
 | progressBar   | bool          |  Defines if the toast should have a progress bar or not. |
-| autoClose     | number || bool |  Sets the lifetime of the toast. If 0 or false the progress bar will not be displayed even if the ```progressBar``` option has been                                      set to ```true```. |
+| autoClose     | number \| bool |  Sets the lifetime of the toast. If 0 or false the progress bar will not be displayed even if the ```progressBar``` option has been                                      set to ```true```. |
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
