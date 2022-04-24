@@ -1,69 +1,124 @@
-:root {
-	--transitionPropertyDuration: 300ms;
-	--transitionAnimationDuration: 500ms;
-	--progressBarDarkModeFirst: #bb86fc;
-	--progressBarDarkModeSecond: #bb86fc;
-	--progressBarWhiteModeFirst: #6e45e1;
-	--progressBarWhiteModeSecond: #89d4cf;
-	--progressBarSuccess: #0fbd1f;
-	--progressBarInfo: #4497d9;
-	--progressBarWarning: #edc52a;
-	--progressBarError: #e34d41;
-	--progress: 1;
-	--opacity: 1;
-	--originalOpacity: 1;
-	--originalPosition: 100px;
-}
-
 * {
-	margin: 0;
 	padding: 0;
+	margin: 0;
 	box-sizing: border-box;
 	scroll-behavior: smooth;
 }
 
-.toast-container {
+:root {
+	--toast-bg: #ffffff;
+	--toast-color: #000000;
+	--toast-icon-color: transparent;
+	--close-toast-icon-color: #b3b3b3;
+	--close-toast-icon-color-hover: #000000;
+	--box-shadow: #e6e6e6;
+	--progress-bar-width: 1;
+	--progress-bar-bg-direction: to right;
+	--progress-bar-first-bg-color: #6e45e1;
+	--progress-bar-second-bg-color: #89d4cf;
+	--left-or-right: 1; /* Default is right. Used only for bounce & slide animations */
+	--current-toast-position: 0px;
+	--opacity: 1;
+	--drag: 0px;
+}
+
+#toasts-container {
+	z-index: 999;
 	position: fixed;
 	width: 280px;
 	margin: 20px;
 	display: flex;
 	flex-direction: column;
-	background-color: transparent;
-	gap: 0.5em;
+	gap: 0.5rem;
 }
+
+/* CONTAINER POSITIONING */
+
+#toasts-container[data-position^="top"] {
+	top: 0;
+}
+
+#toasts-container[data-position^="bottom"] {
+	bottom: 0;
+}
+
+#toasts-container[data-position$="-right"] {
+	right: 0;
+}
+
+#toasts-container[data-position$="-left"] {
+	left: 0;
+}
+
+/* BASIC TOAST */
 
 .toast {
-	box-sizing: border-box;
-	padding: 1.35em;
-	border-radius: 0.28em;
-	background-color: white;
-	cursor: pointer;
+	width: 90%;
+	min-height: 64px;
+	margin: auto;
 	position: relative;
-	width: 100%;
-	transition: all 600ms ease-out;
-	transition: transform var(--transitionPropertyDuration) ease;
-	transition: animation var(--transitionAnimationDuration) linear;
-	transition: opacity 500ms ease;
+	display: block;
+	background-color: var(--toast-bg);
+	color: var(--toast-color);
+	padding: 1.35em 1.55em;
+	border-radius: 0.24em;
 	overflow: hidden;
-	opacity: 1;
+	cursor: pointer;
 	border: 1px solid rgb(173, 161, 161);
-	box-shadow: 0px 1px 10px 0px rgb(230, 230, 230),
-		0 2px 15px 0 rgb(230, 230, 230);
+	box-shadow: 0px 1px 10px 0px var(--box-shadow),
+		0 2px 15px 0 var(--box-shadow);
+	transition: transform 200ms ease;
+	transition: opacity 200ms ease;
+	opacity: var(--opacity);
 }
 
-.toast.dark-mode {
-	background-color: black;
-	color: white;
+.close-toast-icon {
+	position: absolute;
+	top: 4px;
+	right: 5px;
+	fill: var(--close-toast-icon-color);
+	transition: fill 200ms ease;
+	cursor: pointer;
 }
 
-.toast.show-progress::before {
+.close-toast-icon {
+	position: absolute;
+	top: 2px;
+	right: 5px;
+	max-width: 5%;
+}
+
+.close-toast-icon:hover {
+	fill: var(--close-toast-icon-color-hover);
+}
+
+.toast-body {
+	word-break: break-word;
+	word-wrap: wrap;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.toast-body svg {
+	max-width: 10%;
+	fill: var(--toast-icon-color);
+}
+
+.toast-body p {
+	max-width: 45ch;
+}
+
+/* TOAST WITH PROGRESS BAR */
+
+.toast.progress::before {
 	content: "";
 	background-image: linear-gradient(
-		to right,
-		var(--progressBarWhiteModeFirst),
-		var(--progressBarWhiteModeSecond)
+		var(--progress-bar-bg-direction),
+		var(--progress-bar-first-bg-color),
+		var(--progress-bar-second-bg-color)
 	);
-	width: calc(100% * var(--progress));
+	width: calc(100% * var(--progress-bar-width));
 	height: 3.6px;
 	position: absolute;
 	bottom: 0;
@@ -71,310 +126,54 @@
 	right: 0;
 }
 
-.toast.show-progress.dark-mode::before {
-	background-image: linear-gradient(
-		to right,
-		var(--progressBarDarkModeFirst),
-		var(--progressBarDarkModeSecond)
-	);
+/* TOAST WITH ANIMATIONS */
+
+.toast.slide {
+	transform: translateX(calc(120% * var(--left-or-right)));
+	animation: slide 450ms forwards ease;
 }
 
-.toast.show-progress.success::before {
-	background-image: linear-gradient(
-		to right,
-		var(--progressBarSuccess),
-		var(--progressBarSuccess)
-	);
+.toast.bounce {
+	transform: translateX(calc(120% * var(--left-or-right)));
+	animation: bounce 550ms forwards ease;
 }
-
-.toast.success span {
-	color: var(--progressBarSuccess);
-}
-
-.toast.show-progress.info::before {
-	background-image: linear-gradient(
-		to right,
-		var(--progressBarInfo),
-		var(--progressBarInfo)
-	);
-}
-
-.toast.info span {
-	color: var(--progressBarInfo);
-}
-
-.toast.show-progress.warning::before {
-	background-image: linear-gradient(
-		to right,
-		var(--progressBarWarning),
-		var(--progressBarWarning)
-	);
-}
-
-.toast.warning span {
-	color: var(--progressBarWarning);
-}
-
-.toast.show-progress.error::before {
-	background-image: linear-gradient(
-		to right,
-		var(--progressBarError),
-		var(--progressBarError)
-	);
-}
-
-.toast.error span {
-	color: var(--progressBarError);
-}
-
-.toast__close {
-	position: absolute;
-	color: #b3b3b3;
-	font-size: 1.3rem;
-	top: 2px;
-	right: 5px;
-	transition: color 200ms ease;
-}
-
-.toast__close:hover {
-	color: #000000;
-}
-
-.toast.dark-mode > .toast__close:hover {
-	color: white;
-}
-
-.toast__body {
-	font-size: 0.98rem;
-	text-align: left;
-	display: flex;
-	align-items: center;
-}
-
-.toast__body p {
-	word-break: break-all;
-	padding: 0 0.89em;
-}
-
-.toast-container[data-position^="top"] {
-	top: 0;
-}
-
-.toast-container[data-position^="bottom"] {
-	bottom: 0;
-}
-
-.toast-container[data-position$="-right"] {
-	right: 0;
-}
-
-.toast-container[data-position$="-left"] {
-	left: 0;
-}
-
-.toast-container[data-position="top-center"] .toast {
-	transform: translateY(-100vh);
-}
-
-.toast-container[data-position="bottom-center"] .toast {
-	transform: translateY(100vh);
-}
-
-/* BOUNCE ANIMATION */
-
-.toast-container[data-position$="-right"] .toast.bounce {
-	transform: translateX(110%);
-	animation: bounce-in-right 360ms forwards ease;
-}
-
-.toast-container[data-position$="-right"] .toast.bounce-backwards {
-	animation: bounce-in-right-backwards 500ms forwards ease;
-}
-
-.toast-container[data-position$="-left"] .toast.bounce {
-	transform: translateX(-110%);
-	animation: bounce-in-left 360ms forwards ease;
-}
-
-.toast-container[data-position$="-left"] .toast.bounce-backwards {
-	animation: bounce-in-left-backwards 500ms forwards ease;
-}
-
-@keyframes bounce-in-right {
-	0% {
-		transform: translateX(110%);
-	}
-
-	60% {
-		transform: translateX(-30px);
-	}
-
-	80% {
-		transform: translateX(30px);
-	}
-
-	100% {
-		transform: translate(0, 0);
-	}
-}
-
-@keyframes bounce-in-right-backwards {
-	0% {
-		transform: translate(0, 0);
-	}
-
-	60% {
-		transform: translateX(30px);
-	}
-
-	80% {
-		transform: translateX(-30px);
-	}
-
-	100% {
-		transform: translateX(110%);
-	}
-}
-
-@keyframes bounce-in-left {
-	0% {
-		transform: translateX(-110%);
-	}
-
-	60% {
-		transform: translateX(30px);
-	}
-
-	80% {
-		transform: translateX(-30px);
-	}
-
-	100% {
-		transform: translate(0, 0);
-	}
-}
-
-@keyframes bounce-in-left-backwards {
-	0% {
-		transform: translate(0, 0);
-	}
-
-	60% {
-		transform: translateX(-30px);
-	}
-
-	80% {
-		transform: translateX(30px);
-	}
-
-	100% {
-		transform: translateX(-110%);
-	}
-}
-
-/* SLIDE ANIMATION */
-.toast-container[data-position$="-right"] .toast.slide {
-	transform: translateX(100%);
-	animation: slide-in-right 360ms forwards ease;
-}
-
-.toast-container[data-position$="-right"] .toast.slide-backwards {
-	animation: slide-in-right-backwards 500ms forwards ease;
-}
-
-.toast-container[data-position$="-left"] .toast.slide {
-	transform: translateX(-100%);
-	animation: slide-in-left 360ms forwards ease;
-}
-
-.toast-container[data-position$="-left"] .toast.slide-backwards {
-	animation: slide-in-left-backwards 500ms forwards ease;
-}
-
-@keyframes slide-in-right {
-	0% {
-		transform: translateX(100%);
-	}
-
-	100% {
-		transform: translate(0, 0);
-	}
-}
-
-@keyframes slide-in-right-backwards {
-	0% {
-		transform: translate(0, 0);
-	}
-
-	100% {
-		transform: translateX(110%);
-	}
-}
-
-@keyframes slide-in-left {
-	0% {
-		transform: translateX(-100%);
-	}
-
-	100% {
-		transform: translate(0, 0);
-	}
-}
-
-@keyframes slide-in-left-backwards {
-	0% {
-		transform: translate(0, 0);
-	}
-
-	100% {
-		transform: translateX(-110%);
-	}
-}
-
-/* ZOOM ANIMATION */
 
 .toast.zoom {
-	animation: zoom 500ms forwards ease;
-	transform: scale(0, 0);
-	transition: scale var(--transitionPropertyDuration) ease;
+	animation: zoom 450ms forwards ease;
 }
 
-.toast.zoom-backwards {
-	animation: zoom-backwards 600ms forwards ease;
+/* TOAST ANIMATIONS */
+
+@keyframes slide {
+	from {
+		transform: translateX(calc(100% * var(--left-or-right)));
+	}
+
+	to {
+		transform: translate(0, 0);
+	}
+}
+
+@keyframes bounce {
+	0% {
+		transform: translateX(calc(120% * var(--left-or-right)));
+	}
+
+	80% {
+		transform: translateX(calc(30px * var(--left-or-right) * -1));
+	} 
+
+	100% {
+		transform: translate(0, 0);
+	}
 }
 
 @keyframes zoom {
-	0% {
+	from {
 		transform: scale(0, 0);
 	}
 
-	100% {
+	to {
 		transform: scale(1, 1);
-	}
-}
-
-@keyframes zoom-backwards {
-	0% {
-		transform: scale(1, 1);
-	}
-
-	100% {
-		transform: scale(0, 0);
-	}
-}
-
-/* DRAG ANIMATION */
-.slide-back {
-	animation: slide-back 500ms forwards ease ;
-}
-
-@keyframes slide-back {
-	0% {
-		transform: translateX(0);
-	}
-
-	100% {
-		opacity: 1;
-		transform: translateX(var(--originalPosition));
 	}
 }
