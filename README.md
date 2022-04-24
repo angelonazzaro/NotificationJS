@@ -55,7 +55,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## People I'd like to mention
-Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project. 
+Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project. @github/support
 
 ## License
 License under [MIT](https://choosealicense.com/licenses/mit/)
