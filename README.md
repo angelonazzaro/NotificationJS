@@ -1,7 +1,7 @@
 # NotificationJS
 
 NotificationJS is a personal project that I used to improve my front-end skills. <br>
-It is build completely using Javascript Vanilla, CSS3 and HTML5. No frameworks or third-party libraries used. <br>
+It is build completely using ```Javascript Vanilla```, ```CSS3``` and ```HTML5```. No frameworks or third-party libraries used. <br>
 This project was inspired by [React-toastify](https://fkhadra.github.io/react-toastify/introduction/) and [Web dev Simplified](https://www.youtube.com/c/WebDevSimplified). 
 
 ## Usage
@@ -24,6 +24,7 @@ new Toast({
     <li>Super customizable (styles, icons, type)</li>
     <li>Pause toast when the window loses focus</li>
     <li>Pause toast when the user hovers over it</li>
+    <li>Has ```onClose``` hook,</li>
     <li>Dark mode</li>
     <li>Define your animation</li>
     <li>Much more :D</li>
