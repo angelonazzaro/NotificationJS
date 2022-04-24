@@ -52,10 +52,10 @@ new Toast({
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Please make sure to update tests as appropriate.
+:shipit:
 
 ## People I'd like to mention
-Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project. @github/support
+Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project.
 
 ## License
 License under [MIT](https://choosealicense.com/licenses/mit/)
