@@ -50,9 +50,7 @@ new Toast({
 | draggable           | bool                    |  If set to ```true``` makes the toast draggable. When it gets dragged over a certain point, it will begin to fade. |
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-:shipit:
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change :shipit:
 
 ## People I'd like to mention
 Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project.
