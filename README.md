@@ -19,16 +19,16 @@ new Toast({
 ```
 
 ## Features
-  <ul>
-    <li>Define the lifetime of the toast</li>
-    <li>Super customizable (styles, icons, type)</li>
-    <li>Pause toast when the window loses focus</li>
-    <li>Pause toast when the user hovers over it</li>
-    <li>Has ```onClose``` hook,</li>
-    <li>Dark mode</li>
-    <li>Define your animation</li>
-    <li>Much more :D</li>
-  </ul>
+
+-Define the lifetime of the toast
+-Super customizable (styles, icons, type)
+-Pause toast when the window loses focus
+-Pause toast when the user hovers over it
+-Has ```onClose``` hook
+-Dark mode
+-Define your animation
+-Much more :D
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
