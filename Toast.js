@@ -15,7 +15,7 @@ const DEFAULT_OPTIONS = {
 	pauseOnHover: true,
 	pauseOnFocusLoss: true,
 	closeOnClick: false,
-	draggable: true,
+	draggable: false,
 	newestOnTop: true,
 	darkMode: false,
 	icon: null,
@@ -366,6 +366,7 @@ export default class Toast {
 	 * @param {boolean} value
 	 */
 	set draggable(value) {
+		/* TODO: Can't move the element more than once (wtf ??). Need to fix it */
 		if (typeof value !== "boolean" || value === false) return;
 
 		let isDown = false;
@@ -398,7 +399,6 @@ export default class Toast {
 		});
 
 		document.addEventListener("mouseup", () => {
-			console.log("up " + isDown);
 			if (isDown === true) {
 				isDown = false;
 
@@ -549,12 +549,8 @@ export default class Toast {
 		// Firefox fix
 		animationObj.onfinish = () => {
 			this.#toast.remove();
-				// if (
-				// 	this.#parent.childNodes[
-				// 		this.#parent.childNodes.length - 1
-				// 	] !== this.#toast
-				// )
-					collapse(this.#parent);
+			collapse(this.#parent);
+			if (!this.#parent.hasChildNodes()) this.#parent.remove();
 		};
 
 		animationObj.play();
