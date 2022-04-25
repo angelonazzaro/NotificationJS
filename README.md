@@ -6,7 +6,7 @@ This project was inspired by [React-toastify](https://fkhadra.github.io/react-to
 
 ## Installation
 
-```node
+```npm
 npm install js-notifier
 ```
 
