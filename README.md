@@ -4,6 +4,12 @@ NotificationJS is a personal project that I used to improve my front-end skills.
 It is build completely using ```Javascript Vanilla```, ```CSS3``` and ```HTML5```. No frameworks or third-party libraries used. <br>
 This project was inspired by [React-toastify](https://fkhadra.github.io/react-toastify/introduction/) and [Web dev Simplified](https://www.youtube.com/c/WebDevSimplified). 
 
+## Installation
+
+```node
+npm install js-notifier
+```
+
 ## Usage
 
 ```javascript
