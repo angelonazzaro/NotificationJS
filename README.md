@@ -12,6 +12,14 @@ npm install js-notifier
 
 ## Usage
 
+In your ```HTML``` file: 
+```html
+<head>
+  <link rel="stylesheet" href="/yourpathtothelib/style.css" />
+</head>
+```
+
+In your ```Javascript``` file: 
 ```javascript
 import Toast from "/yourpathtothelib/Toast.js";
 
