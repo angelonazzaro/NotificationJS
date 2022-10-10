@@ -67,7 +67,7 @@ new Toast({
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change :shipit:
 
 ## People I'd like to mention
-Again, I'd like to mention @fkhadra and @WebDevSimplified that inspired me to code this project.
+Again, I'd like to mention [@fkhadra](https://github.com/fkhadra) and [@WebDevSimplified](https://github.com/WebDevSimplified) that inspired me to code this project.
 
 ## License
 License under [MIT](https://choosealicense.com/licenses/mit/)
